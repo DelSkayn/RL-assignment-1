@@ -4,6 +4,7 @@ import importlib
 from hex_skeleton import HexBoard
 #from player import Player
 from trueskill import Rating, rate_1vs1
+from joblib import Parallel, delayed
 import matplotlib
 import matplotlib.pyplot as plt
 
@@ -38,36 +39,55 @@ class Tournament:
 
         self.seed = seed
 
+    def run_match(self,blue,red):
+        b = self.players[blue](self.size,HexBoard.BLUE,self.seed)
+        r = self.players[red](self.size,HexBoard.RED,self.seed)
+        board = HexBoard(self.size)
+
+        blue_turn = True;
+        while not board.is_game_over():
+            if blue_turn:
+                b.make_move(board)
+            else:
+                r.make_move(board)
+            blue_turn = not blue_turn
+
+        return not blue_turn, blue,red
+
+
+    def process_winner(self,blue_won, blue, red):
+        if blue_won:
+            b,r = rate_1vs1(self.b_scores[blue],self.r_scores[red])
+            self.b_scores[blue] = b
+            self.r_scores[red] = r
+            if blue != red:
+                # Dont rate if playing against once self.
+                a,b = rate_1vs1(self.mixed_scores[blue], self.mixed_scores[red])
+                self.mixed_scores[blue] = a
+                self.mixed_scores[red] = b
+            self.match_scores[blue][red] += 1
+        else:
+            # RED won because it made the wining moves
+            r,b = rate_1vs1(self.r_scores[red],self.b_scores[blue])
+            self.r_scores[red] = r
+            self.r_scores[blue] = b
+            if blue != red:
+                # Dont rate if playing against once self.
+                a,b = rate_1vs1(self.mixed_scores[red], self.mixed_scores[blue])
+                self.mixed_scores[red] = a
+                self.mixed_scores[blue] = b
+
+
     def play_round(self):
         self.seed += 1
 
-        for i in range(0,len(self.players)):
-            for j in range(0,len(self.players)):
-                blue = self.players[i](self.size,HexBoard.BLUE,self.seed)
-                red = self.players[j](self.size,HexBoard.RED,self.seed)
-                board = HexBoard(self.size)
+        l = len(self.players)
+        wins = Parallel(n_jobs=-1,verbose=10)(delayed(self.run_match)(i,j) for i in range(l) for j in range(l))
+        for blue_won, blue,red in wins:
+            self.process_winner(blue_won,blue,red)
+        #for i in range(0,len(self.players)):
+        #    for j in range(0,len(self.players)):
 
-                blue_turn = True;
-                while not board.is_game_over():
-                    if blue_turn:
-                        blue.make_move(board)
-                    else:
-                        red.make_move(board)
-                    blue_turn = not blue_turn
-
-                if blue_turn:
-                    # RED won because it made the wining moves
-                    rate_1vs1(self.r_scores[j],self.b_scores[i])
-                    if i != j:
-                        # Dont rate if playing against once self.
-                        rate_1vs1(self.mixed_scores[j], self.mixed_scores[i])
-                    self.match_scores[i][j] -= 1
-                else:
-                    rate_1vs1(self.b_scores[i],self.r_scores[j])
-                    if i != j:
-                        # Dont rate if playing against once self.
-                        rate_1vs1(self.mixed_scores[i], self.mixed_scores[j])
-                    self.match_scores[i][j] += 1
 
     def print_scores(self):
         for i in range(len(self.players)):
@@ -76,9 +96,14 @@ class Tournament:
             print()
 
     def show_scores(self):
-        names = list(map(lambda x: x.name(x), self.players))
+        names = np.array(list(map(lambda x: x.name(), self.players)))
+        order = np.argsort(self.mixed_scores)
+        names = names[order]
+        match_scores = self.match_scores[order]
+        for i in range(len(match_scores)):
+            match_scores[i] = match_scores[i][order]
         fig, ax = plt.subplots()
-        im = ax.imshow(self.match_scores)
+        ax.imshow(match_scores)
         ax.set_xticks(np.arange(len(names)))
         ax.set_yticks(np.arange(len(names)))
         ax.set_xticklabels(names)
@@ -88,11 +113,24 @@ class Tournament:
 
         for i in range(len(names)):
             for j in range(len(names)):
-                text = ax.text(j,i, self.match_scores[i,j], ha="center", va="center", color="w")
-
+                ax.text(j,i, match_scores[i,j], ha="center", va="center", color="w")
 
         fig.tight_layout()
         plt.show()
+
+    def print_elo(self):
+        print("Mixed scores:")
+        for i in range(len(self.mixed_scores)):
+            print(self.players[i].name() + " " + str(self.mixed_scores[i]))
+        print()
+        print("Blue scores:")
+        for i in range(len(self.b_scores)):
+            print(self.players[i].name() + " " + str(self.b_scores[i]))
+        print()
+        print("Red scores:")
+        for i in range(len(self.r_scores)):
+            print(self.players[i].name() + " " + str(self.r_scores[i]))
+        print()
 
 
 if __name__ == "__main__":
@@ -107,4 +145,5 @@ if __name__ == "__main__":
     for i in range(args.NUM_ROUNDS):
         print("ROUND: " + str(i + 1))
         tournament.play_round()
+    tournament.print_elo()
     tournament.show_scores()

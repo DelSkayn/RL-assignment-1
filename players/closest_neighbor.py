@@ -2,7 +2,7 @@ from .player import Player
 from hex_skeleton import HexBoard
 
 class ClosestNeighbor(Player):
-    def name(self):
+    def name():
         return "Closest Neighbor"
 
     def make_move(self, board):

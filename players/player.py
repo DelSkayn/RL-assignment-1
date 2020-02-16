@@ -14,7 +14,7 @@ class Player:
             coords = (self.random.randrange(0,self.size),self.random.randrange(0,self.size))
         return coords
 
-    def name(self):
+    def name():
         return "Random"
 
     # Called when the player needs to make a move

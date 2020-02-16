@@ -1,7 +1,7 @@
 from .player import Player
 
 class RandNeighbor(Player):
-    def name(self):
+    def name():
         return "Random Neighbor"
 
     def make_move(self, board):

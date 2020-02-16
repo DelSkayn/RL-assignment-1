@@ -8,7 +8,7 @@ class MonteCarlo(Player):
         super().__init__(board_size, color, seed)
         self.num_tries = 10
 
-    def name(self):
+    def name():
         return "MonteCarlo 10"
 
     def play_random_game(self,board):
@@ -24,7 +24,7 @@ class MonteCarlo(Player):
                 board.place(move,HexBoard.RED)
             blue_turn = not blue_turn
 
-        if blue_turn == self.color != HexBoard.BLUE:
+        if blue_turn == (self.color != HexBoard.BLUE):
             return 1
         return 0
 
@@ -49,4 +49,4 @@ class MonteCarlo(Player):
                         best = (i,j)
         board.place(best,self.color)
 
-#export = MonteCarlo
+export = MonteCarlo
