@@ -10,26 +10,30 @@ parser.add_argument("SEED",type = int,nargs='?', default = None)
 args = parser.parse_args()
 
 try:
-    p_blue = importlib.import_module("players." + args.PLAYER_BLUE).export(args.BOARD_SIZE,HexBoard.BLUE,args.SEED)
-    p_red = importlib.import_module("players." + args.PLAYER_RED).export(args.BOARD_SIZE,HexBoard.RED,args.SEED)
+    c_blue = importlib.import_module("players." + args.PLAYER_BLUE).export
+    c_red = importlib.import_module("players." + args.PLAYER_RED).export
+    p_blue = c_blue(args.BOARD_SIZE,HexBoard.BLUE,args.SEED)
+    p_red = c_red(args.BOARD_SIZE,HexBoard.RED,args.SEED)
 except ModuleNotFoundError:
     print("Invalid player name")
     exit(-1)
 
-print(p_blue.name() + " VS " + p_red.name())
+print(c_blue.name() + " VS " + c_red.name())
 board = HexBoard(args.BOARD_SIZE)
 is_blue_turn = True
 while not board.is_game_over():
     if is_blue_turn:
         print("BLUE turn:")
+        board.print()
         p_blue.make_move(board)
     else:
         print("RED turn:")
+        board.print()
         p_red.make_move(board)
     is_blue_turn = not is_blue_turn
     board.print()
 
 if is_blue_turn:
-    print("RED " + p_red.name() + " won!")
+    print("RED " + c_red.name() + " won!")
 else:
-    print("BLUE " + p_blue.name() + " won!")
+    print("BLUE " + c_blue.name() + " won!")

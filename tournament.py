@@ -5,7 +5,6 @@ from hex_skeleton import HexBoard
 #from player import Player
 from trueskill import Rating, rate_1vs1
 from joblib import Parallel, delayed
-import matplotlib
 import matplotlib.pyplot as plt
 
 
@@ -13,7 +12,8 @@ class Tournament:
     def __init__(self,board_size,seed):
         self.size = board_size;
         self.board = None
-        self.players = [];
+        self.players = []
+        self.rounds_played = 0
 
         print("loading players:")
         player_mods = glob.glob("players/*.py")
@@ -35,7 +35,6 @@ class Tournament:
             self.b_scores.append(Rating())
             self.r_scores.append(Rating())
             self.mixed_scores.append(Rating())
-
 
         self.seed = seed
 
@@ -78,15 +77,14 @@ class Tournament:
                 self.mixed_scores[blue] = b
 
 
-    def play_round(self):
+    def play_round(self,par):
         self.seed += 1
 
         l = len(self.players)
-        wins = Parallel(n_jobs=-1,verbose=10)(delayed(self.run_match)(i,j) for i in range(l) for j in range(l))
+        wins = par(delayed(self.run_match)(i,j) for i in range(l) for j in range(l))
         for blue_won, blue,red in wins:
             self.process_winner(blue_won,blue,red)
-        #for i in range(0,len(self.players)):
-        #    for j in range(0,len(self.players)):
+        self.rounds_played += 1
 
 
     def print_scores(self):
@@ -99,7 +97,7 @@ class Tournament:
         names = np.array(list(map(lambda x: x.name(), self.players)))
         order = np.argsort(self.mixed_scores)
         names = names[order]
-        match_scores = self.match_scores[order]
+        match_scores = self.match_scores[order] / self.rounds_played
         for i in range(len(match_scores)):
             match_scores[i] = match_scores[i][order]
         fig, ax = plt.subplots()
@@ -142,8 +140,9 @@ if __name__ == "__main__":
     parser.add_argument("NUM_ROUNDS",type = int,nargs='?', default = 20)
     args = parser.parse_args()
     tournament = Tournament(args.BOARD_SIZE, args.SEED)
-    for i in range(args.NUM_ROUNDS):
-        print("ROUND: " + str(i + 1))
-        tournament.play_round()
+    with Parallel(n_jobs=-1,verbose=10,) as par:
+        for i in range(args.NUM_ROUNDS):
+            print("ROUND: " + str(i + 1))
+            tournament.play_round(par)
     tournament.print_elo()
     tournament.show_scores()
