@@ -11,4 +11,4 @@ class MonteCarlo2(MonteCarlo):
     def name():
         return "MonteCarlo 2"
 
-export = MonteCarlo2
+#export = MonteCarlo2

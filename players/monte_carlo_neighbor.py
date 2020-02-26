@@ -67,4 +67,4 @@ class MonteCarloNeighbor(Player):
                         best = (i,j)
         board.place(best,self.color)
 
-export = MonteCarloNeighbor
+#export = MonteCarloNeighbor

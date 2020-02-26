@@ -9,7 +9,7 @@ class Interative(AlphaBetaDijkstra):
         super().__init__(board_size, color, seed)
         self.t_table = {};
         self.move_table = {};
-        self.depth = 4
+        self.depth = 5
 
 
     def name():
@@ -68,17 +68,21 @@ class Interative(AlphaBetaDijkstra):
         total_best_move = None
         for i in range(self.depth):
             self.nodes_searched = 0
-            best_move = None
+            best_moves = []
             best = -math.inf
             for node in self.gen_moves(board):
                 board.place(node,self.color)
                 value = self.alpha_beta(board, depth, best, math.inf, False)
                 board.undo_place(node)
-                if value > best:
+                if value == best:
+                    best_moves.append(node)
+                elif value > best:
                     best = value
-                    best_move = node
-            total_best_move = best_move
-            self.move_table[board.hash()] = best_move
+                    best_moves = []
+                    best_moves.append(node)
+            print(best)
+            total_best_move = self.random.choice(best_moves)
+            self.move_table[board.hash()] = total_best_move
             depth += 1
         if total_best_move is None:
             total_best_move = self.get_random_move(board)

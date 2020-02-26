@@ -62,6 +62,9 @@ class AlphaBetaDijkstra(AlphaBeta):
             if new_length is not None:
                 our_length = min(our_length,new_length)
 
+        if not maxi:
+            our_length += 1
+
         there_length = self.size * self.size
         for i in range(self.size):
             if self.other_color == HexBoard.BLUE:
