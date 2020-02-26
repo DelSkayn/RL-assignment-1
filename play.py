@@ -17,10 +17,11 @@ if args.r:
 
 board = HexBoard(args.BOARD_SIZE)
 board.print()
-opponent = importlib.import_module("players." + args.PLAYER).export(args.BOARD_SIZE,opp_color,args.SEED)
+opponent_class = importlib.import_module("players." + args.PLAYER).export
+opponent = opponent_class(args.BOARD_SIZE,opp_color,args.SEED)
 
 
-print("Playing vs: " + opponent.name())
+print("Playing vs: " + opponent_class.name())
 
 is_player_turn = not args.r
 while not board.is_game_over():
