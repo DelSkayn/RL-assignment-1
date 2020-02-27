@@ -22,4 +22,4 @@ class Player:
         move = self.get_random_move(board)
         board.place(move,self.color)
 
-export = Player
+#export = Player

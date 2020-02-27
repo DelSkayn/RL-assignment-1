@@ -23,4 +23,4 @@ class RandNeighbor(Player):
                 move = neighors.pop()
         board.place(move,self.color)
 
-export = RandNeighbor
+#export = RandNeighbor

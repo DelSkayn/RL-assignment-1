@@ -140,7 +140,7 @@ if __name__ == "__main__":
     parser.add_argument("NUM_ROUNDS",type = int,nargs='?', default = 20)
     args = parser.parse_args()
     tournament = Tournament(args.BOARD_SIZE, args.SEED)
-    with Parallel(n_jobs=-1,verbose=10,) as par:
+    with Parallel(n_jobs=15,verbose=10,) as par:
         for i in range(args.NUM_ROUNDS):
             print("ROUND: " + str(i + 1))
             tournament.play_round(par)

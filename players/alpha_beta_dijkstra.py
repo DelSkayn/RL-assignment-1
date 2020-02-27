@@ -1,7 +1,6 @@
 from .alpha_beta import AlphaBeta
 from hex_skeleton import HexBoard
 from heapq import heapify, heappop, heappush
-import math
 
 class AlphaBetaDijkstra(AlphaBeta):
 
@@ -48,9 +47,9 @@ class AlphaBetaDijkstra(AlphaBeta):
     def eval(self, board, maxi):
         if board.is_game_over():
             if maxi:
-                return -math.inf
+                return -self.max_value
             else:
-                return math.inf
+                return self.max_value
         # Just to make sure that lenght will always be larger then the path
         our_length = self.size * self.size
         for i in range(self.size):
