@@ -2,6 +2,8 @@ from .player import Player
 from hex_skeleton import HexBoard
 import math
 
+# The basic implementation of a alpha beta searcher
+
 class AlphaBeta(Player):
 
     def __init__(self, board_size, color, seed):
@@ -64,7 +66,7 @@ class AlphaBeta(Player):
         for node in AlphaBeta.get_nodes(board):
             board.place(node,self.color)
             self.nodes_searched += 1;
-            value = self.alpha_beta(board,self.depth, best, self.max_value, False)
+            value = self.alpha_beta(board,self.depth, -self.max_value, self.max_value, False)
             self.nodes_searched += 1;
             board.undo_place(node)
             if value == best:

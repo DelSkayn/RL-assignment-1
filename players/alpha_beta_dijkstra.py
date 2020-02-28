@@ -2,6 +2,7 @@ from .alpha_beta import AlphaBeta
 from hex_skeleton import HexBoard
 from heapq import heapify, heappop, heappush
 
+# Implements dijkstra evaluation
 class AlphaBetaDijkstra(AlphaBeta):
 
     def __init__(self, board_size, color, seed):
@@ -9,7 +10,7 @@ class AlphaBetaDijkstra(AlphaBeta):
         self.depth = 3
 
     def name():
-        return "Alpha Beta Dijkstra"
+        return "Alpha Beta Dijkstra Depth 3"
 
     def shortest_path(self,start,color,board,shorter_then):
         if board.is_empty(start):

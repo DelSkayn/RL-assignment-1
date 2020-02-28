@@ -1,5 +1,6 @@
 import random
 
+# Does random moves
 class Player:
     def __init__(self, board_size, color, seed):
         self.size = board_size
@@ -22,4 +23,4 @@ class Player:
         move = self.get_random_move(board)
         board.place(move,self.color)
 
-#export = Player
+export = Player

@@ -1,5 +1,7 @@
 from .player import Player
 
+
+# places random neighoring stones
 class RandNeighbor(Player):
     def name():
         return "Random Neighbor"
@@ -23,4 +25,4 @@ class RandNeighbor(Player):
                 move = neighors.pop()
         board.place(move,self.color)
 
-#export = RandNeighbor
+export = RandNeighbor

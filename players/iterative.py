@@ -2,6 +2,7 @@ from .alpha_beta_dijkstra import AlphaBetaDijkstra
 from hex_skeleton import HexBoard
 import sys
 
+# An interative player
 class Interative(AlphaBetaDijkstra):
 
     def __init__(self, board_size, color, seed):
@@ -71,7 +72,7 @@ class Interative(AlphaBetaDijkstra):
             best = -self.max_value
             for node in self.gen_moves(board):
                 board.place(node,self.color)
-                value = self.alpha_beta(board, depth, best, self.max_value, False)
+                value = self.alpha_beta(board, depth, -self.max_value, self.max_value, False)
                 board.undo_place(node)
                 if value == best:
                     best_moves.append(node)

@@ -1,6 +1,8 @@
 from .player import Player
 from hex_skeleton import HexBoard
 
+# A player which tries to create a path by placing
+# the neighboring stone which is the closest to the other end of the board
 class ClosestNeighbor(Player):
     def name():
         return "Closest Neighbor"

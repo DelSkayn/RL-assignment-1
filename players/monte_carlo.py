@@ -2,11 +2,14 @@ from .player import Player
 from hex_skeleton import HexBoard
 import copy
 
+# A simple monte carlo player which plays 10 random games
+# for each possible move and then picks the one which
+# wins the most amount of times
 class MonteCarlo(Player):
 
     def __init__(self, board_size, color, seed):
         super().__init__(board_size, color, seed)
-        self.num_tries = 100
+        self.num_tries = 10
 
     def name():
         return "MonteCarlo 10"
