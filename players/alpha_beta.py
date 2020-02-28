@@ -1,6 +1,7 @@
 from .player import Player
 from hex_skeleton import HexBoard
 import math
+import time
 
 # The basic implementation of a alpha beta searcher
 
@@ -8,7 +9,7 @@ class AlphaBeta(Player):
 
     def __init__(self, board_size, color, seed):
         super().__init__(board_size, color, seed)
-        self.depth = 3
+        self.depth = 4
         self.other_color = HexBoard.RED
         if self.color == HexBoard.RED:
             self.other_color = HexBoard.BLUE

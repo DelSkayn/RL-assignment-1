@@ -1,6 +1,7 @@
 from .alpha_beta_dijkstra import AlphaBetaDijkstra
 from hex_skeleton import HexBoard
 import sys
+import time
 
 # An interative player
 class Interative(AlphaBetaDijkstra):
@@ -10,6 +11,7 @@ class Interative(AlphaBetaDijkstra):
         self.t_table = {};
         self.move_table = {};
         self.depth = 5
+        self.time_available = 8
 
 
     def name():
@@ -66,11 +68,18 @@ class Interative(AlphaBetaDijkstra):
     def make_move(self,board):
         depth = 0
         total_best_move = None
-        for i in range(self.depth):
+        t_end = time.monotonic() + self.time_available
+        running = True
+        # Avoid going to deep and waisting time
+        while running:
             self.nodes_searched = 0
             best_moves = []
             best = -self.max_value
             for node in self.gen_moves(board):
+                t_new = time.monotonic()
+                if t_end < t_new:
+                    running = False
+                    break
                 board.place(node,self.color)
                 value = self.alpha_beta(board, depth, -self.max_value, self.max_value, False)
                 board.undo_place(node)
@@ -80,7 +89,18 @@ class Interative(AlphaBetaDijkstra):
                     best = value
                     best_moves = []
                     best_moves.append(node)
-            #print(best)
+            print(best)
+
+            if len(best_moves) == 0:
+                best_moves = [self.get_random_move(board)]
+            if best == -self.max_value:
+                # the algorithm sees that its losing
+                # So quit and try the previous best move
+                break
+            if best == self.max_value:
+                # The algo sees a winning set of moves
+                # so select one and stop going deeper
+                running = False
             total_best_move = self.random.choice(best_moves)
             self.move_table[board.hash()] = total_best_move
             depth += 1
