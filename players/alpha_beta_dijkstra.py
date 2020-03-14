@@ -1,5 +1,5 @@
 from .alpha_beta import AlphaBeta
-from hex_skeleton import HexBoard
+from hexboard import HexBoard
 from heapq import heapify, heappop, heappush
 
 # Implements dijkstra evaluation

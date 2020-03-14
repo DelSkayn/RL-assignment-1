@@ -1,6 +1,5 @@
 from .alpha_beta_dijkstra import AlphaBetaDijkstra
-from hex_skeleton import HexBoard
-import sys
+from hexboard import HexBoard
 import time
 
 # An interative player
@@ -11,7 +10,7 @@ class Interative(AlphaBetaDijkstra):
         self.t_table = {};
         self.move_table = {};
         self.depth = 5
-        self.time_available = 8
+        self.time_available = 1
 
 
     def name():
@@ -39,9 +38,9 @@ class Interative(AlphaBetaDijkstra):
             best = -self.max_value
             best_move = None
             for node in self.gen_moves(board):
-                board.place(node, self.color)
+                board.place(node)
                 value = self.alpha_beta(board, depth - 1, alpha, beta, False)
-                board.undo_place(node)
+                board.undo(node)
                 if value > best:
                     best = value
                     best_move = node
@@ -52,9 +51,9 @@ class Interative(AlphaBetaDijkstra):
             best = self.max_value
             best_move = None
             for node in self.gen_moves(board):
-                board.place(node, self.other_color)
+                board.place(node)
                 value = self.alpha_beta(board, depth - 1, alpha, beta, True)
-                board.undo_place(node)
+                board.undo(node)
                 if value < best:
                     best = value
                     best_move = node
@@ -68,7 +67,7 @@ class Interative(AlphaBetaDijkstra):
     def make_move(self,board):
         depth = 0
         total_best_move = None
-        t_end = time.monotonic() + self.time_available
+        t_end = time.process_time() + self.time_available
         running = True
         # Avoid going to deep and waisting time
         while running:
@@ -76,23 +75,23 @@ class Interative(AlphaBetaDijkstra):
             best_moves = []
             best = -self.max_value
             for node in self.gen_moves(board):
-                t_new = time.monotonic()
+                t_new = time.process_time()
                 if t_end < t_new:
                     running = False
                     break
-                board.place(node,self.color)
+                board.place(node)
                 value = self.alpha_beta(board, depth, -self.max_value, self.max_value, False)
-                board.undo_place(node)
+                board.undo(node)
                 if value == best:
                     best_moves.append(node)
                 elif value > best:
                     best = value
                     best_moves = []
                     best_moves.append(node)
-            print(best)
+            #print(best)
 
             if len(best_moves) == 0:
-                best_moves = [self.get_random_move(board)]
+                best_moves = [board.get_random_move(self.random)]
             if best == -self.max_value:
                 # the algorithm sees that its losing
                 # So quit and try the previous best move
@@ -105,7 +104,7 @@ class Interative(AlphaBetaDijkstra):
             self.move_table[board.hash()] = total_best_move
             depth += 1
         if total_best_move is None:
-            total_best_move = self.get_random_move(board)
-        board.place(total_best_move, self.color)
+            total_best_move = board.get_random_move(self.random)
+        board.place(total_best_move)
 
 export = Interative

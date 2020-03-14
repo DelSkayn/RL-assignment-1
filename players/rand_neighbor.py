@@ -16,13 +16,13 @@ class RandNeighbor(Player):
                             neighors.add(n)
         move = None
         if len(neighors) == 0:
-            move = self.get_random_move(board)
+            move = board.get_random_move(self.random)
         elif len(neighors) == 1:
             move = neighors.pop()
         else:
             num = self.random.randrange(1,len(neighors))
             for i in range(num):
                 move = neighors.pop()
-        board.place(move,self.color)
+        board.place(move)
 
 export = RandNeighbor

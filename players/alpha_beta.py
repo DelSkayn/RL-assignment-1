@@ -1,5 +1,5 @@
 from .player import Player
-from hex_skeleton import HexBoard
+from hexboard import HexBoard
 import math
 import time
 
@@ -28,10 +28,7 @@ class AlphaBeta(Player):
         return 0
 
     def get_nodes(board):
-        for i in range(board.size):
-            for j in range(board.size):
-                if board.is_empty((i,j)):
-                    yield (i,j)
+        return board.get_available_moves()
 
     def alpha_beta(self, board, depth, alpha, beta, maxi):
         self.nodes_searched += 1;
@@ -40,9 +37,9 @@ class AlphaBeta(Player):
         if maxi:
             value = -self.max_value
             for node in AlphaBeta.get_nodes(board):
-                board.place(node,self.color)
+                board.place(node)
                 n_value = self.alpha_beta(board, depth-1, alpha,beta,False)
-                board.undo_place(node)
+                board.undo(node)
                 value = max(value,n_value)
                 alpha = max(alpha, value)
                 if alpha >= beta:
@@ -51,9 +48,9 @@ class AlphaBeta(Player):
         else:
             value = self.max_value
             for node in AlphaBeta.get_nodes(board):
-                board.place(node,self.other_color)
+                board.place(node)
                 n_value = self.alpha_beta(board, depth-1, alpha, beta, True)
-                board.undo_place(node)
+                board.undo(node)
                 value = min(value,n_value)
                 beta = min(beta,value)
                 if alpha >= beta:
@@ -64,18 +61,20 @@ class AlphaBeta(Player):
         best = -self.max_value
         best_moves = []
         self.nodes_searched = 0
-        for node in AlphaBeta.get_nodes(board):
-            board.place(node,self.color)
+        t_s = time.process_time()
+        for node in board.get_available_moves():
+            board.place(node)
             self.nodes_searched += 1;
             value = self.alpha_beta(board,self.depth, -self.max_value, self.max_value, False)
             self.nodes_searched += 1;
-            board.undo_place(node)
+            board.undo(node)
             if value == best:
                 best_moves.append(node)
             elif value > best:
                 best = value
                 best_moves = [node]
+        #print("time:",time.process_time() - t_s);
         best_move = self.random.choice(best_moves)
-        board.place(best_move,self.color)
+        board.place(best_move)
 
 export = AlphaBeta

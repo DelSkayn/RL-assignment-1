@@ -1,5 +1,5 @@
 from .player import Player
-from hex_skeleton import HexBoard
+from hexboard import HexBoard
 
 # A player which tries to create a path by placing
 # the neighboring stone which is the closest to the other end of the board
@@ -48,6 +48,6 @@ class ClosestNeighbor(Player):
                         break
                 if found:
                     break
-        board.place(move,self.color)
+        board.place(move)
 
 export = ClosestNeighbor

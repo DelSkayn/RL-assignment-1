@@ -1,6 +1,6 @@
 import argparse
 import importlib
-from hex_skeleton import HexBoard
+from hexboard import HexBoard
 
 parser = argparse.ArgumentParser(description="Hex interactive player")
 parser.add_argument("BOARD_SIZE",type = int)
@@ -23,10 +23,12 @@ board = HexBoard(args.BOARD_SIZE)
 is_blue_turn = True
 while not board.is_game_over():
     if is_blue_turn:
+        assert(board.current_player() == HexBoard.BLUE)
         print("BLUE turn:")
         board.print()
         p_blue.make_move(board)
     else:
+        assert(board.current_player() == HexBoard.RED)
         print("RED turn:")
         board.print()
         p_red.make_move(board)

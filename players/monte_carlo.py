@@ -1,6 +1,4 @@
 from .player import Player
-from hex_skeleton import HexBoard
-import copy
 
 # A simple monte carlo player which plays 10 random games
 # for each possible move and then picks the one which
@@ -15,27 +13,17 @@ class MonteCarlo(Player):
         return "MonteCarlo 10"
 
     def play_random_game(self,board):
-        # Our move has already been done
-        # So it is the blue turn if we are not blue
-        blue_turn = self.color != HexBoard.BLUE
-
         while not board.is_game_over():
-            move = self.get_random_move(board)
-            if blue_turn:
-                board.place(move,HexBoard.BLUE)
-            else:
-                board.place(move,HexBoard.RED)
-            blue_turn = not blue_turn
-
-        if blue_turn == (self.color != HexBoard.BLUE):
+            move = board.get_random_move(self.random)
+            board.place(move)
+        if board.current_player() == self.color:
             return 1
         return 0
 
 
 
     def make_move(self,board):
-        best = self.get_random_move(board);
-        best_score = 0
+        best_score = -1
         for i in range(0,self.size):
             for j in range(self.size):
                 if board.is_empty((i,j)):
@@ -44,12 +32,12 @@ class MonteCarlo(Player):
                         # Dont bother if we cant get a better score
                         if self.num_tries - k + score <= best_score:
                             break
-                        tmp_board = copy.deepcopy(board)
-                        tmp_board.place((i,j),self.color)
+                        tmp_board = board.copy()
+                        tmp_board.place((i,j))
                         score += self.play_random_game(tmp_board)
                     if score > best_score:
                         best_score = score
                         best = (i,j)
-        board.place(best,self.color)
+        board.place(best)
 
 export = MonteCarlo

@@ -1,7 +1,7 @@
 import glob
 import numpy as np
 import importlib
-from hex_skeleton import HexBoard
+from hexboard import HexBoard
 #from player import Player
 from trueskill import Rating, rate_1vs1
 from joblib import Parallel, delayed
