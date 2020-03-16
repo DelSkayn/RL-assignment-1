@@ -10,7 +10,7 @@ class Interative(AlphaBetaDijkstra):
         self.t_table = {};
         self.move_table = {};
         self.depth = 5
-        self.time_available = 1
+        self.time_available = 8
 
 
     def name():
@@ -88,7 +88,7 @@ class Interative(AlphaBetaDijkstra):
                     best = value
                     best_moves = []
                     best_moves.append(node)
-            #print(best)
+            print(best)
 
             if len(best_moves) == 0:
                 best_moves = [board.get_random_move(self.random)]
@@ -105,6 +105,7 @@ class Interative(AlphaBetaDijkstra):
             depth += 1
         if total_best_move is None:
             total_best_move = board.get_random_move(self.random)
+        assert(board.current_player() == self.color)
         board.place(total_best_move)
 
 export = Interative

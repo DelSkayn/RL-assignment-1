@@ -23,6 +23,9 @@ class HexBoard:
                 val *= 4
         return val
 
+    def eq(self,other):
+        return np.all(self.board == other.board)
+
     def is_game_over(self):
         return self.game_over
 
@@ -55,12 +58,20 @@ class HexBoard:
                 self.game_over = True
             else:
                 self.cur_player_blue = not self.cur_player_blue
+        else:
+            self.print()
+            print("MOVE:",coords)
+            if not self.is_empty(coords):
+                raise Exception("INVALID BOARD: move position is not empty")
+            if self.game_over:
+                raise Exception("INVALID BOARD: game already over")
 
     def undo(self,coords):
         x,y = coords
+        if not self.game_over:
+            self.cur_player_blue = not self.cur_player_blue
         self.game_over = False
         self.board[x,y] = HexBoard.EMPTY
-        self.cur_player_blue = not self.cur_player_blue
 
     def get_random_move(self,random):
         moves = np.argwhere(self.board == HexBoard.EMPTY)
@@ -134,3 +145,7 @@ class HexBoard:
                         print("- ",end="")
             print("|")
         print("   -----------------------")
+        if self.cur_player_blue:
+            print("TURN: BLUE");
+        else:
+            print("TURN: RED");

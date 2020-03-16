@@ -35,7 +35,7 @@ while not board.is_game_over():
     is_blue_turn = not is_blue_turn
     board.print()
 
-if is_blue_turn:
+if board.current_player() == HexBoard.RED:
     print("RED " + c_red.name() + " won!")
 else:
     print("BLUE " + c_blue.name() + " won!")

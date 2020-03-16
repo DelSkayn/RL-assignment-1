@@ -28,13 +28,16 @@ class MonteCarlo(Player):
             for j in range(self.size):
                 if board.is_empty((i,j)):
                     score = 0
+                    board.place((i,j))
                     for k in range(self.num_tries):
                         # Dont bother if we cant get a better score
                         if self.num_tries - k + score <= best_score:
                             break
                         tmp_board = board.copy()
-                        tmp_board.place((i,j))
                         score += self.play_random_game(tmp_board)
+                    #print("SCORE:",score);
+                    #board.print()
+                    board.undo((i,j))
                     if score > best_score:
                         best_score = score
                         best = (i,j)

@@ -1,6 +1,6 @@
 import argparse
 import importlib
-from hex_skeleton import HexBoard
+from hexboard import HexBoard
 
 parser = argparse.ArgumentParser(description="Hex interactive player")
 parser.add_argument("BOARD_SIZE",type = int)
@@ -32,7 +32,7 @@ while not board.is_game_over():
             x = int(x)
             y = ord(y) - ord('a')
             if x >= 0 and x < board.size and y >= 0 and y < board.size and board.is_empty((y,x)):
-                board.place((y,x),play_color)
+                board.place((y,x))
                 is_player_turn = not is_player_turn
             else:
                 print("invalid move")
