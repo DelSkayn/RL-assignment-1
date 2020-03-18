@@ -5,7 +5,7 @@ import time
 TIME_LIMIT = 8
 
 N_PLAYOUTS = 5
-CI = 2
+CI = 1
 
 LARGE_VALUE = 1_000_000
 SMALL_VALUE = -LARGE_VALUE
@@ -74,24 +74,31 @@ class MCTS(Player):
         # simulation
         reward_ours = 0
         reward_theres = 0
-        for i in range(self.playouts):
-            board = node.board.copy()
-            while not board.is_game_over():
-                move = board.get_random_move(self.random)
-                board.place(move)
-            if board.current_player() == node.board.current_player():
-                reward_ours += 1
-            else:
-                reward_theres += 1
+        if node.board.is_game_over():
+            reward_ours = self.playouts
+        else:
+            for i in range(self.playouts):
+                board = node.board.copy()
+                while not board.is_game_over():
+                    move = board.get_random_move(self.random)
+                    board.place(move)
+                if board.current_player() != node.board.current_player():
+                    reward_ours += 1
+                else:
+                    reward_theres += 1
+        reward_ours /= self.playouts;
+        reward_theres /= self.playouts;
 
         #backpropagation
         while node is not None:
             node.visits += 1
-            node.reward += reward_theres
+            node.reward += reward_ours
+            node.reward -= reward_theres
             node = node.parent
             if node is not None:
                 node.visits +=1
-                node.reward += reward_ours
+                node.reward += reward_theres
+                node.reward -= reward_ours
                 node = node.parent
 
     def print_move_list(self):
@@ -103,10 +110,25 @@ class MCTS(Player):
             print("SCORE:", n.score(self.ci))
             print("VISITS:", n.visits)
 
+    def recover(self,board):
+        if self.root is None:
+            self.root = Node((-1,-1),board.copy(),None)
+            return;
+        new_root = None
+        for c in self.root.children:
+            if c.board.eq(board):
+                new_root = c;
+                break
+        if new_root is None:
+            self.root = Node((-1,-1),board.copy(), None)
+        else:
+            self.root = new_root
+            self.root.parent = None
+
 
     def make_move(self,board):
+        self.recover(board)
         t_end = time.process_time() + self.time_limit
-        self.root = Node((-1,-1),board,None)
         i = 0;
         while time.process_time() < t_end:
             self.iterate()
@@ -116,7 +138,8 @@ class MCTS(Player):
         node = self.root.children[node_idx]
         print("SCORE:",node.score(self.ci))
         self.print_move_list()
+        self.root = node
+        self.root.parent = None
         board.place(node.move)
-
 
 export = MCTS

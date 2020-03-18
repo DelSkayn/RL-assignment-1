@@ -4,8 +4,8 @@ from hexboard import HexBoard
 
 parser = argparse.ArgumentParser(description="Hex interactive player")
 parser.add_argument("BOARD_SIZE",type = int)
-parser.add_argument("PLAYER_RED",help="The red player",type = str,nargs='?', default = "player")
 parser.add_argument("PLAYER_BLUE",help="The blue player",type = str,nargs='?', default = "player")
+parser.add_argument("PLAYER_RED",help="The red player",type = str,nargs='?', default = "player")
 parser.add_argument("SEED",type = int,nargs='?', default = None)
 args = parser.parse_args()
 
