@@ -16,7 +16,7 @@ class AlphaBeta(Player):
 
         self.max_value = board_size * board_size
 
-    def name():
+    def name(self):
         return "Alpha Beta Base"
 
     def eval(self, board, maxi):
@@ -77,4 +77,4 @@ class AlphaBeta(Player):
         best_move = self.random.choice(best_moves)
         board.place(best_move)
 
-export = AlphaBeta
+#export = AlphaBeta

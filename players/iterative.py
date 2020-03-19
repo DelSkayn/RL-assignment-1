@@ -9,11 +9,10 @@ class Interative(AlphaBetaDijkstra):
         super().__init__(board_size, color, seed)
         self.t_table = {};
         self.move_table = {};
-        self.depth = 5
-        self.time_available = 8
+        self.time_available = 10
 
 
-    def name():
+    def name(self):
         return "Iterative"
 
     def gen_moves(self,board):
@@ -88,7 +87,7 @@ class Interative(AlphaBetaDijkstra):
                     best = value
                     best_moves = []
                     best_moves.append(node)
-            print(best)
+            #print(best)
 
             if len(best_moves) == 0:
                 best_moves = [board.get_random_move(self.random)]
@@ -108,4 +107,4 @@ class Interative(AlphaBetaDijkstra):
         assert(board.current_player() == self.color)
         board.place(total_best_move)
 
-export = Interative
+#export = Interative

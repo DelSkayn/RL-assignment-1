@@ -7,7 +7,7 @@ class Player:
         self.color = color
         self.random = random.Random(seed)
 
-    def name():
+    def name(self):
         return "Random"
 
     # Called when the player needs to make a move
@@ -15,4 +15,4 @@ class Player:
         move = board.get_random_move(self.random)
         board.place(move)
 
-export = Player
+#export = Player

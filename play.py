@@ -21,7 +21,7 @@ opponent_class = importlib.import_module("players." + args.PLAYER).export
 opponent = opponent_class(args.BOARD_SIZE,opp_color,args.SEED)
 
 
-print("Playing vs: " + opponent_class.name())
+print("Playing vs: " + opponent.name())
 
 is_player_turn = not args.r
 while not board.is_game_over():

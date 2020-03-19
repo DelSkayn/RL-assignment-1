@@ -7,7 +7,4 @@ class MonteCarlo20(MonteCarlo):
         super().__init__(board_size, color, seed)
         self.num_tries = 20
 
-    def name():
-        return "MonteCarlo 20"
-
 #export = MonteCarlo20

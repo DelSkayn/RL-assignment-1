@@ -11,7 +11,7 @@ class MonteCarloTime(Player):
         super().__init__(board_size, color, seed)
         self.time_limit = 8
 
-    def name():
+    def name(self):
         return "MonteCarlo Time"
 
     def play_random_game(self,board):

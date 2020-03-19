@@ -2,7 +2,7 @@ from .player import Player
 import numpy as np
 import time
 
-TIME_LIMIT = 8
+TIME_LIMIT = 10
 
 N_PLAYOUTS = 5
 CI = 1
@@ -58,8 +58,8 @@ class MCTS(Player):
         self.playouts = playouts
         self.root = None
 
-    def name():
-        return "MCTS"
+    def name(self):
+        return "MCTS " + str(self.playouts) + " " + str(self.ci)
 
     def iterate(self):
         # selection and expansion
@@ -127,8 +127,8 @@ class MCTS(Player):
 
 
     def make_move(self,board):
-        self.recover(board)
         t_end = time.process_time() + self.time_limit
+        self.recover(board)
         i = 0;
         while time.process_time() < t_end:
             self.iterate()
@@ -137,7 +137,7 @@ class MCTS(Player):
         node_idx = np.argmax([c.visits for c in self.root.children])
         node = self.root.children[node_idx]
         print("SCORE:",node.score(self.ci))
-        self.print_move_list()
+        #self.print_move_list()
         self.root = node
         self.root.parent = None
         board.place(node.move)

@@ -3,7 +3,7 @@ from .player import Player
 
 # places random neighoring stones
 class RandNeighbor(Player):
-    def name():
+    def name(self):
         return "Random Neighbor"
 
     def make_move(self, board):
@@ -25,4 +25,4 @@ class RandNeighbor(Player):
                 move = neighors.pop()
         board.place(move)
 
-export = RandNeighbor
+#export = RandNeighbor

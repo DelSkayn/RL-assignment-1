@@ -9,8 +9,8 @@ class AlphaBetaDijkstra(AlphaBeta):
         super().__init__(board_size, color, seed)
         self.depth = 3
 
-    def name():
-        return "Alpha Beta Dijkstra Depth 3"
+    def name(self):
+        return "Alpha Beta Dijkstra Depth:" + str(self.depth)
 
     def shortest_path(self,start,color,board,shorter_then):
         if board.is_empty(start):
@@ -78,4 +78,4 @@ class AlphaBetaDijkstra(AlphaBeta):
         return there_length - our_length
 
 
-export = AlphaBetaDijkstra
+#export = AlphaBetaDijkstra

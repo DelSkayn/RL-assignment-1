@@ -18,7 +18,7 @@ except ModuleNotFoundError:
     print("Invalid player name")
     exit(-1)
 
-print(c_blue.name() + " VS " + c_red.name())
+print(p_blue.name() + " VS " + p_red.name())
 board = HexBoard(args.BOARD_SIZE)
 is_blue_turn = True
 while not board.is_game_over():
@@ -36,6 +36,6 @@ while not board.is_game_over():
     board.print()
 
 if board.current_player() == HexBoard.RED:
-    print("RED " + c_red.name() + " won!")
+    print("RED " + p_red.name() + " won!")
 else:
-    print("BLUE " + c_blue.name() + " won!")
+    print("BLUE " + p_blue.name() + " won!")

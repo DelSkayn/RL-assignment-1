@@ -5,12 +5,12 @@ from .player import Player
 # wins the most amount of times
 class MonteCarlo(Player):
 
-    def __init__(self, board_size, color, seed):
+    def __init__(self, board_size, color, seed, num_tries = 10):
         super().__init__(board_size, color, seed)
-        self.num_tries = 10
+        self.num_tries = num_tries
 
-    def name():
-        return "MonteCarlo 10"
+    def name(self):
+        return "MonteCarlo " + str(self.num_tries)
 
     def play_random_game(self,board):
         while not board.is_game_over():
@@ -43,4 +43,4 @@ class MonteCarlo(Player):
                         best = (i,j)
         board.place(best)
 
-export = MonteCarlo
+#export = MonteCarlo

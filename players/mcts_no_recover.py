@@ -10,6 +10,10 @@ LARGE_VALUE = 1_000_000
 SMALL_VALUE = -LARGE_VALUE
 
 class MCTSNoRecover(MCTS):
+
+    def name(self):
+        return "MCTS NO RE " + str(self.playouts) + " " + str(self.ci)
+
     def make_move(self,board):
         t_end = time.process_time() + self.time_limit
         self.root = Node((-1,-1), board.copy(),None)
@@ -20,9 +24,9 @@ class MCTSNoRecover(MCTS):
             #print(i)
             i+= 1
             self.iterate()
-        best_node = self.get_best_node()
+        node_idx = np.argmax([c.visits for c in self.root.children])
+        best_node = self.root.children[node_idx]
         board.place(best_node.move)
-        assert(board.hash() == best_node.board.hash())
         self.root = best_node;
         self.root.parent = None
 

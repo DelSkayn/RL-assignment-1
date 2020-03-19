@@ -8,8 +8,5 @@ class AlphaBetaDijkstra4(AlphaBetaDijkstra):
         super().__init__(board_size, color, seed)
         self.depth = 4
 
-    def name():
-        return "Alpha Beta Dijkstra Depth 4"
 
-
-export = AlphaBetaDijkstra4
+#export = AlphaBetaDijkstra4

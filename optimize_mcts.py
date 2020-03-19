@@ -1,6 +1,8 @@
 import glob
 import numpy as np
 import importlib
+from players.mcts import MCTS
+from players.mcts_no_recover import MCTSNoRecover
 from hexboard import HexBoard
 #from player import Player
 from trueskill import Rating, rate_1vs1
@@ -15,16 +17,14 @@ class Tournament:
         self.players = []
         self.rounds_played = 0
 
-        print("loading players:")
-        player_mods = glob.glob("players/*.py")
-        for mod in player_mods:
-            mod = mod.replace("/",".")[:-3]
-            module = importlib.import_module(mod)
-            if hasattr(module,'export'):
-                print('\t' + mod)
-                self.players.append(module.export)
+        cis = [0.1,0.2,0.5,1.0,2.0,4.0]
+        playouts = [1,2,5,10,20]
+        players = [MCTS,MCTSNoRecover]
 
-        self.names = [None for 0 in range(len(self.players))]
+        all_players = [(p,o,c) for p in players for o in playouts for c in cis]
+        self.players = all_players
+        print(self.players)
+        self.names = [None for i in range(len(self.players))]
 
         self.rounds = 0
         self.match_scores = np.zeros((len(self.players), len(self.players)))
@@ -40,8 +40,10 @@ class Tournament:
         self.seed = seed
 
     def run_match(self,blue,red):
-        b = self.players[blue](self.size,HexBoard.BLUE,self.seed)
-        r = self.players[red](self.size,HexBoard.RED,self.seed)
+        b_args = self.players[blue]
+        r_args = self.players[red]
+        b = b_args[0](self.size,HexBoard.BLUE,self.seed, playouts = b_args[1], ci = b_args[2])
+        r = r_args[0](self.size,HexBoard.RED,self.seed, playouts = r_args[1], ci = r_args[2])
         if self.names[blue] is None:
             self.names[blue] = b.name()
         if self.names[red] is None:
@@ -99,7 +101,7 @@ class Tournament:
             print()
 
     def show_scores(self):
-        names = self.names
+        names = np.array(list(map(lambda x: x.name(), self.players)))
         order = np.argsort(self.mixed_scores)
         names = names[order]
         match_scores = self.match_scores[order] / self.rounds_played
@@ -124,29 +126,22 @@ class Tournament:
     def print_elo(self):
         print("Mixed scores:")
         for i in range(len(self.mixed_scores)):
-            print(self.names[i] + " " + str(self.mixed_scores[i]))
+            print(self.players[i].name() + " " + str(self.mixed_scores[i]))
         print()
         print("Blue scores:")
         for i in range(len(self.b_scores)):
-            print(self.names[i] + " " + str(self.b_scores[i]))
+            print(self.players[i].name() + " " + str(self.b_scores[i]))
         print()
         print("Red scores:")
         for i in range(len(self.r_scores)):
-            print(self.names[i] + " " + str(self.r_scores[i]))
+            print(self.players[i].name() + " " + str(self.r_scores[i]))
         print()
 
 
 if __name__ == "__main__":
-    print("+++ START +++")
-    import argparse
-    parser = argparse.ArgumentParser(description="Hex tournament player")
-    parser.add_argument("BOARD_SIZE",type = int)
-    parser.add_argument("SEED",type = int,nargs='?', default = 0)
-    parser.add_argument("NUM_ROUNDS",type = int,nargs='?', default = 20)
-    args = parser.parse_args()
-    tournament = Tournament(args.BOARD_SIZE, args.SEED)
+    tournament = Tournament(5, 0)
     with Parallel(n_jobs=15,verbose=10,) as par:
-        for i in range(args.NUM_ROUNDS):
+        for i in range(20):
             print("ROUND: " + str(i + 1))
             tournament.play_round(par)
     tournament.print_elo()

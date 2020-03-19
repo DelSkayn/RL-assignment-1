@@ -4,7 +4,7 @@ from hexboard import HexBoard
 # A player which tries to create a path by placing
 # the neighboring stone which is the closest to the other end of the board
 class ClosestNeighbor(Player):
-    def name():
+    def name(self):
         return "Closest Neighbor"
 
     def make_move(self, board):
@@ -50,4 +50,4 @@ class ClosestNeighbor(Player):
                     break
         board.place(move)
 
-export = ClosestNeighbor
+#export = ClosestNeighbor
